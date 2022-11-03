@@ -1,0 +1,11 @@
+{
+  "common.logIn": "Log in",
+  "common.password": "Password",
+  "common.phone": "Phone",
+  "common.signUp": "Sign up",
+  "login.authError": "Incorrect email or password",
+  "login.dontHaveAcc": "Don't have an account?",
+  "login.forgotPassword": "Forgot Password?",
+  "login.title": "Welcome back 🚀",
+  "errors.smthWentWrong": "An error occurred. Please try later."
+}
