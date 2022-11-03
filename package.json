@@ -11,7 +11,13 @@
     "lint": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./",
     "lint:fix": "tsc --noEmit && eslint --ext .js,.jsx,.ts,.tsx ./ --fix",
     "format": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "android:staging": "react-native run-android --variant=stagingdebug",
+    "android:staging-release": "react-native run-android --variant=stagingrelease",
+    "android:dev": "react-native run-android --variant=developmentdebug",
+    "android:dev-release": "react-native run-android --variant=developmentrelease",
+    "android:prod": "react-native run-android --variant=productiondebug",
+    "android:prod-release": "react-native run-android --variant=productionrelease"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4",
