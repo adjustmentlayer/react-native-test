@@ -19,8 +19,18 @@ const { appStore } = stores;
 export const appService = {
   async init() {
     log.dbg(`environment: ${process.env.NODE_ENV}`);
-    this.initDevTools();
+    appStore.setLoading(true);
 
+    this.initDevTools();
+    this.initRemoveConfig();
+
+    sessionService
+      .init()
+      .then(() => authService.init())
+      .then(() => walletService.init())
+      .finally(() => appStore.setLoading(false));
+  },
+  initRemoveConfig: () => {
     remoteConfig()
       .setDefaults({})
       .then(() => remoteConfig().fetchAndActivate())
@@ -33,13 +43,6 @@ export const appService = {
         const parameters = remoteConfig().getAll();
         log.debug('[Firebase/ Remote config] all parameters ', parameters);
       });
-
-    appStore.setLoading(true);
-    sessionService
-      .init()
-      .then(() => authService.init())
-      .then(() => walletService.init())
-      .finally(() => appStore.setLoading(false));
   },
   initDevTools() {
     if (__DEV__) {
