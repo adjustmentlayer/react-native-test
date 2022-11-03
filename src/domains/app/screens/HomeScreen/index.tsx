@@ -19,11 +19,6 @@ import { inject, observer } from 'mobx-react';
 import { walletService } from '~services';
 import { AccountModel, WalletStore } from '~domains/wallet/wallet.store';
 import { styles } from './styles';
-import {
-  BottomSheetHandle,
-  DraggableBottomSheet,
-  ResolveStyleCallback
-} from '~common/components/DraggableBottomSheet';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { nh } from '~common/lib/normalize.helper';
 
@@ -34,13 +29,6 @@ export const HomeScreen = inject('walletStore')(
     const [activeItem] = useState<AccountModel | null>(null);
     const [refreshing, setRefreshing] = useState(false);
     const headerHeight = useHeaderHeight();
-    const bottomSheetRef = useRef<BottomSheetHandle>(null);
-    const [bottomSheetMinHeight, setBottomSheetMinHeight] = useState<
-      number | null
-    >(null);
-    const [bottomSheetMaxHeight, setBottomSheetMaxHeight] = useState<
-      number | null
-    >(null);
 
     const [keyboardIsShown, setKeyboardIsShown] = useState(false);
 
@@ -79,38 +67,6 @@ export const HomeScreen = inject('walletStore')(
       );
     };
 
-    const resolveContentStyle = useCallback<ResolveStyleCallback>(
-      ({ animatedValue, maxUpwardTranslateY }) => ({
-        transform: [
-          {
-            translateY: animatedValue.interpolate({
-              inputRange: [
-                maxUpwardTranslateY,
-                maxUpwardTranslateY + headerHeight
-              ],
-              outputRange: [headerHeight, 0],
-              extrapolate: 'clamp'
-            })
-          }
-        ]
-      }),
-      []
-    );
-
-    const handleLayout = useCallback(
-      (e: LayoutChangeEvent) => {
-        if (keyboardIsShown) {
-          setBottomSheetMaxHeight(0);
-          setBottomSheetMinHeight(0);
-        } else {
-          const { height } = e.nativeEvent.layout;
-          setBottomSheetMaxHeight(height + headerHeight);
-          setBottomSheetMinHeight(nh(403));
-        }
-      },
-      [keyboardIsShown]
-    );
-
     useEffect(() => {
       const handleWillShow = () => {
         setKeyboardIsShown(true);
@@ -146,11 +102,7 @@ export const HomeScreen = inject('walletStore')(
     }, []);
 
     return (
-      <Layout
-        safeAreaProps={{
-          onLayout: handleLayout
-        }}
-      >
+      <Layout>
         <ScrollView
           contentContainerStyle={{
             flex: 1
@@ -177,21 +129,6 @@ export const HomeScreen = inject('walletStore')(
             />
           </View>
         </ScrollView>
-        {bottomSheetMinHeight !== null && bottomSheetMaxHeight !== null && (
-          <DraggableBottomSheet
-            ref={bottomSheetRef}
-            minHeight={bottomSheetMinHeight}
-            maxHeight={bottomSheetMaxHeight}
-            draggableAreaStyle={{
-              display: 'none'
-            }}
-            resolveContentStyle={resolveContentStyle}
-          >
-            <View style={styles.bottomSheetContent}>
-              <Text>Chart is coming soon...</Text>
-            </View>
-          </DraggableBottomSheet>
-        )}
       </Layout>
     );
   })
