@@ -18,12 +18,7 @@
     "android:dev": "react-native run-android --variant=developmentdebug",
     "android:dev-release": "react-native run-android --variant=developmentrelease",
     "android:prod": "react-native run-android --variant=productiondebug",
-    "android:prod-release": "react-native run-android --variant=productionrelease",
-    "locize:sync": "env-cmd -f build.env node locize-scripts/sync.js",
-    "locize:sync-dev": "env-cmd -f .env.development node locize-scripts/sync.js",
-    "locize:download": "env-cmd -f .env.production locize-scripts/download.js",
-    "locize:download-dev": "env-cmd -f .env.development node locize-scripts/download.js",
-    "locize:save-missing-dev": "env-cmd -f .env.development locize-scripts/save-missing.js"
+    "android:prod-release": "react-native run-android --variant=productionrelease"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4",
