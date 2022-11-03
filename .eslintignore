@@ -1,0 +1,8 @@
+/src/i18n/**/*.json
+babel.config.js
+metro.config.js
+react-native.config.js
+locize-scripts/**/*
+/__tests__
+
+
