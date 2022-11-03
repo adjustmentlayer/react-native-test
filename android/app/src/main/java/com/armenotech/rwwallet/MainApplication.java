@@ -1,4 +1,4 @@
-package com.rwwallet;
+package com.armenotech.rwwallet;
 
 import android.app.Application;
 import android.content.Context;
