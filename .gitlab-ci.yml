@@ -1,0 +1,73 @@
+include:
+  - local: /.gitlab/android.gitlab-ci.yml
+  - local: /.gitlab/ios.gitlab-ci.yml
+
+variables:
+  GIT_STRATEGY: clone
+  RELEASE_KEYSTORE_FILE: ${CI_PROJECT_DIR}/android/app/release.keystore
+  DEPLOYER_IMAGE: ${CI_REGISTRY_IMAGE}:master
+  IMAGE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}
+
+stages:
+  - environment
+  - local
+  - test
+  - internal
+  - firebase
+  - alpha
+  - beta
+  - production
+
+.only_rules:
+  only:
+    refs:
+      - master
+    changes:
+      - .dockerignore
+      - Dockerfile
+      - packages.txt
+      - Gemfile
+      - Gemfile.lock
+      - fastlane/**
+
+.restrict_artifacts:
+  when: manual
+  dependencies: []
+
+.prepare_android_env:
+  image: $DEPLOYER_IMAGE
+  before_script:
+    - npm i --unsafe-perm
+    - export PATH=$(npm bin):$PATH
+    - envsubst < .ci-vars | sponge .env.production
+    - cat .env.production
+    - cd android/
+    - cp $FIREBASE_GOOGLE_SERVICES_JSON_KEY app/google-services.json
+    - cat $ANDROID_UPLOAD_STORE_FILE | base64 -d > $RELEASE_KEYSTORE_FILE
+    - envsubst < gradle.properties | sponge gradle.properties
+    - fastlane run validate_play_store_json_key
+  after_script: []
+  tags:
+    - mobile
+    - android
+
+.prepare_ios_env:
+  before_script:
+    # Because this repo is remains on the host machine (MacMini) when CI/CD (aka shell scripts) interacting with it.
+    # And because the variables above are for incremental fetching without cleaning the repo via reinitializing it
+    ## rather than cleaning and cloning again, working tree need to be clean
+    - envsubst < .ci-vars | sponge .env.production
+    - cat .env.production
+    - bundle config set --local path 'vendor/bundle'
+    - bundle install
+    - bundle exec fastlane install_plugins
+    - npm i --legacy-peer-deps
+    - cd ios/
+    - pod deintegrate
+    - pod install --repo-update
+    - cp $FIREBASE_GOOGLE_SERVICES_INFO_PLIST GoogleService-Info.plist
+  after_script: []
+  tags:
+    - mobile
+    - ios
+  when: manual

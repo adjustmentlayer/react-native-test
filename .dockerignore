@@ -1,0 +1,8 @@
+android/
+ios/
+src/
+node_modules/
+.vscode/
+.bundle/
+.gitlab/
+vendor/
