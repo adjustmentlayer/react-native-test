@@ -1,4 +1,4 @@
-package com.rwwallet;
+package com.armenotech.rwwallet;
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
 

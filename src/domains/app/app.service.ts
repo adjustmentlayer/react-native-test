@@ -13,6 +13,8 @@ import { sessionService } from '../session/session.service';
 import { walletService } from '../wallet/wallet.service';
 import { authService } from '../auth/auth.service';
 import { log } from '~common/lib/logging.helper';
+import remoteConfig from '@react-native-firebase/remote-config';
+
 
 const { appStore } = stores;
 export const appService = {
@@ -26,6 +28,21 @@ export const appService = {
       .then(() => authService.init())
       .then(() => walletService.init())
       .finally(() => appStore.setLoading(false));
+
+      remoteConfig()
+          .setDefaults({
+              awesome_new_feature: 'disabled',
+          })
+          .then(() => remoteConfig().fetchAndActivate())
+          .then(fetchedRemotely => {
+              if (fetchedRemotely) {
+                  console.log('Configs were retrieved from the backend and activated.');
+              } else {
+                  console.log(
+                      'No configs were fetched from the backend, and the local configs were already activated',
+                  );
+              }
+          });
   },
   initDevTools() {
     if (__DEV__) {

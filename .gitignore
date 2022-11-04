@@ -62,6 +62,10 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
+# firebase config
+/ios/Pods/GoogleService-Info.plist
+/android/app/google-services.json
+
 .env.*
 
 .eslintcache
