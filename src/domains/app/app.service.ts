@@ -15,12 +15,24 @@ import { authService } from '../auth/auth.service';
 import { log } from '~common/lib/logging.helper';
 import remoteConfig from '@react-native-firebase/remote-config';
 
-
 const { appStore } = stores;
 export const appService = {
   async init() {
     log.dbg(`environment: ${process.env.NODE_ENV}`);
     this.initDevTools();
+
+    remoteConfig()
+      .setDefaults({})
+      .then(() => remoteConfig().fetchAndActivate())
+      .then((fetchedRemotely) => {
+        if (fetchedRemotely) {
+          // Configs were retrieved from the backend and activated.
+        } else {
+          //No configs were fetched from the backend, and the local configs were already activated
+        }
+        const parameters = remoteConfig().getAll();
+        log.debug('[Firebase/ Remote config] all parameters ', parameters);
+      });
 
     appStore.setLoading(true);
     sessionService
@@ -28,21 +40,6 @@ export const appService = {
       .then(() => authService.init())
       .then(() => walletService.init())
       .finally(() => appStore.setLoading(false));
-
-      remoteConfig()
-          .setDefaults({
-              awesome_new_feature: 'disabled',
-          })
-          .then(() => remoteConfig().fetchAndActivate())
-          .then(fetchedRemotely => {
-              if (fetchedRemotely) {
-                  console.log('Configs were retrieved from the backend and activated.');
-              } else {
-                  console.log(
-                      'No configs were fetched from the backend, and the local configs were already activated',
-                  );
-              }
-          });
   },
   initDevTools() {
     if (__DEV__) {
