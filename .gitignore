@@ -63,7 +63,7 @@ buck-out/
 /vendor/bundle/
 
 # firebase config
-/ios/Pods/GoogleService-Info.plist
+/ios/GoogleService-Info.plist
 /android/app/google-services.json
 
 .env.*
